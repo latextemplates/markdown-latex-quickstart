@@ -1,0 +1,80 @@
+name: Update Files
+on:
+  push:
+    branches:
+      - main
+      - update-ltg
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+jobs:
+  generatetex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          ref: '${{ github.event.pull_request.head.ref }}'
+          # PAT with workflow scope so the bot can push regenerated .github/workflows/check.yml
+          token: ${{ secrets.GH_TOKEN_WRITE }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'generator-latex-template/package-lock.json'
+      - name: Make generator available globally
+        working-directory: ${{ github.workspace }}/generator-latex-template
+        run: |
+          npm install
+          npm link
+          npm install -g yo
+      - run: mkdir /tmp/ltg
+      - name: Generate template
+        shell: bash
+        working-directory: /tmp/ltg
+        run: |
+          yo $GITHUB_WORKSPACE/generator-latex-template/generators/app/index.js \
+           --githubpublish\
+           --docker=iot\
+           --documentclass=mwe\
+           --papersize=a4\
+           --latexcompiler=lualatex\
+           --bibtextool=biblatex\
+           --overleaf=true\
+           --texlive=2026\
+           --lang=en\
+           --listings=listings\
+           --enquotes=csquotes\
+           --tweakouterquote=babel\
+           --todo=none\
+           --examples=false\
+           --howtotext=false
+        env:
+          yeoman_test: false
+      - name: Prepare files
+        working-directory: /tmp/ltg
+        run: |
+          # the LICENSE of the repository should be kept
+          rm LICENSE
+
+          # Files are ready
+          # Overwrite old versions in $GITHUB_WORKSPACE
+          cp -r * $GITHUB_WORKSPACE
+          cp -r .* $GITHUB_WORKSPACE
+
+          # output current status
+          cd ${{ github.workspace }}
+          git status
+          git diff
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v10
+        with:
+          message: 'Update files based on generated files by template generator'
+          author_name: 'github-actions[bot]'
+          author_email: 'github-actions[bot]@users.noreply.github.com'
+          push: false
+      - name: Push changes
+        run: |
+          parallel --retries 10 --delay 9 ::: "git pull --rebase; git push"
