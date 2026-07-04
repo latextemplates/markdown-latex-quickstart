@@ -1,0 +1,37 @@
+name: check-markdown
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - update-ltg
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+jobs:
+  vale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v7
+      - name: Extract the Markdown body from the LaTeX main
+        # Vale lints prose, so pull out just the content between
+        # \begin{markdown} … \end{markdown} (drop the two delimiter lines).
+        # German (main-de.tex) is skipped: proselint targets English.
+        run: |
+          mkdir -p .vale-content
+          sed -n '/\\begin{markdown}/,/\\end{markdown}/p' main.tex \
+            | sed '1d;$d' > .vale-content/main.md
+          echo "----- extracted Markdown -----"
+          cat .vale-content/main.md
+      - name: Vale
+        uses: errata-ai/vale-action@reviewdog
+        with:
+          files: .vale-content
+          # Inline file/line annotations via reviewdog's Checks-API reporter.
+          reporter: github-check
+          # Annotate only; do not fail the build on prose suggestions.
+          fail_on_error: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
