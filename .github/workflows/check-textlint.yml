@@ -1,0 +1,47 @@
+name: check-textlint
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - update-ltg
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+jobs:
+  textlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Lint the Markdown body of main.tex with textlint
+        run: |
+          # Extract the prose from the \begin{markdown} block. textlint understands
+          # Markdown, so (unlike aspell/Vale) we do NOT strip inline LaTeX — its rules
+          # ignore \zcref etc., which keeps the reported columns aligned with main.tex.
+          # A finding on extracted line L maps to main.tex line L + OFFSET, where
+          # OFFSET is the line of \begin{markdown}. Rules come from .textlintrc.json.
+          OFFSET=$(grep -n '^\\begin{markdown}' main.tex | head -1 | cut -d: -f1)
+          mkdir -p .textlint-content
+          sed -n '/^\\begin{markdown}/,/^\\end{markdown}/p' main.tex | sed '1d;$d' > .textlint-content/body.md
+
+          npx --yes \
+            --package textlint \
+            --package textlint-rule-terminology \
+            --package textlint-rule-write-good \
+            textlint --format json .textlint-content/body.md > textlint.json || true
+
+          # Emit GitHub workflow-command annotations anchored to main.tex
+          # (https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
+          jq -r --argjson off "$OFFSET" '
+            .[].messages[] |
+            "::warning file=main.tex,line=" + ((.line + $off) | tostring) +
+            ",col=" + (.column | tostring) +
+            "::[textlint] " + .ruleId + ": " + .message
+          ' textlint.json | tee annotations.txt
+
+          echo "textlint reported $(wc -l < annotations.txt) finding(s) in the Markdown body of main.tex." >> "$GITHUB_STEP_SUMMARY"
