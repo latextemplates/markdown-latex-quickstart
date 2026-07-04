@@ -31,6 +31,10 @@ jobs:
           files: .vale-content
           # Inline file/line annotations via reviewdog's Checks-API reporter.
           reporter: github-check
+          # Annotate every finding (not just changed lines), and surface
+          # suggestions/warnings too — not only errors.
+          filter_mode: nofilter
+          level: info
           # Annotate only; do not fail the build on prose suggestions.
           fail_on_error: false
         env:
