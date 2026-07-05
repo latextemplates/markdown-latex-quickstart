@@ -61,13 +61,18 @@ On the command line, there are additional features:
 - `make view`: Opens the configured viewer
 - `make mrproper`: Cleans up and removes also editor backup files.
 
-### Linting your Markdown (Vale)
+### Linting your Markdown
 
-The `check-markdown` workflow lints the Markdown you write with [Vale](https://vale.sh) and posts the findings as inline annotations on `main.tex`. To lint locally, install Vale (`brew install vale`, `choco install vale`, or see <https://vale.sh/docs>) and run it on the extracted Markdown body:
+Two workflows lint the Markdown you write and post inline annotations on `main.tex`: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`). To lint locally, extract the Markdown body first, then run either tool on it:
 
 ```bash
 sed -n '/\\begin{markdown}/,/\\end{markdown}/p' main.tex | sed '1d;$d' > body.md
+
+# Vale (install: `brew install vale` / `choco install vale`, or see <https://vale.sh/docs>)
 vale body.md
+
+# textlint (no install — npx fetches it on demand)
+npx --package textlint --package textlint-rule-terminology --package textlint-rule-write-good textlint body.md
 ```
 
 ## Tool hints
