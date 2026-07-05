@@ -20,32 +20,30 @@ jobs:
           VALE_VERSION=3.15.1
           curl -sL "https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" | tar -xz vale
           ./vale --version
-      - name: Lint the Markdown body of main.tex
+      - name: Lint the Markdown manuscript
         run: |
-          # The prose lives inside \begin{markdown} … \end{markdown}. Extract it
-          # (dropping the two delimiter lines) and strip inline LaTeX commands so
-          # Vale lints prose, not markup. The sed edits keep the line COUNT, so a
-          # finding on extracted line L maps to main.tex line L + OFFSET, where
-          # OFFSET is the line of \begin{markdown}. German (main-de.tex) is
-          # skipped: Vale's checks here target English.
-          OFFSET=$(grep -n '^\\begin{markdown}' main.tex | head -1 | cut -d: -f1)
+          # The prose is a plain Markdown file. Vale is a spell-checker, so strip
+          # the few inline LaTeX commands (\zcref, \LaTeX) it would otherwise flag
+          # as misspellings. The substitution is per-line, so line numbers are
+          # preserved and findings map straight back to manuscript.md — no block
+          # extraction or offset. German (manuscript-de.md) is skipped: these
+          # checks target English.
           mkdir -p .vale-content
-          sed -n '/^\\begin{markdown}/,/^\\end{markdown}/p' main.tex | sed '1d;$d' \
-            | sed -E 's/\\[A-Za-z@]+\*?(\{[^}]*\})?//g' > .vale-content/main.md
+          sed -E 's/\\[A-Za-z@]+\*?(\{[^}]*\})?//g' manuscript.md > .vale-content/manuscript.md
 
           ./vale --output=JSON .vale-content > vale.json || true
 
-          # Emit GitHub workflow-command annotations anchored to main.tex
+          # Emit GitHub workflow-command annotations anchored to manuscript.md
           # (https://docs.github.com/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
-          jq -r --argjson off "$OFFSET" '
+          jq -r '
             to_entries[] | .value[] |
             "::" + (if .Severity == "error" then "error"
                     elif .Severity == "warning" then "warning"
                     else "notice" end) +
-            " file=main.tex,line=" + ((.Line + $off) | tostring) +
+            " file=manuscript.md,line=" + (.Line | tostring) +
             ",col=" + (.Span[0] | tostring) +
             "::[Vale] " + .Check + ": " + .Message
           ' vale.json | tee annotations.txt
 
           count=$(wc -l < annotations.txt)
-          echo "Vale reported ${count} finding(s) in the Markdown body of main.tex." >> "$GITHUB_STEP_SUMMARY"
+          echo "Vale reported ${count} finding(s) in manuscript.md." >> "$GITHUB_STEP_SUMMARY"
