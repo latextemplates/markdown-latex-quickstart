@@ -25,21 +25,10 @@ jobs:
           # Vale lints manuscript.md directly. Its Markdown scope already ignores
           # inline LaTeX — verified that \zcref{...}, \emph{...} etc. and their
           # arguments are not spell-checked — so no pre-processing is needed and a
-          # plain local `vale manuscript.md` reproduces this exactly. German
+          # plain local `vale manuscript.md` reproduces the same findings. The
+          # output template makes Vale emit GitHub workflow-command annotations
+          # itself, so there is no JSON/jq post-processing. German
           # (manuscript-de.md) is skipped: these checks target English.
-          ./vale --output=JSON manuscript.md > vale.json || true
-
-          # Emit GitHub workflow-command annotations anchored to manuscript.md
-          # (https://docs.github.com/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
-          jq -r '
-            to_entries[] | .value[] |
-            "::" + (if .Severity == "error" then "error"
-                    elif .Severity == "warning" then "warning"
-                    else "notice" end) +
-            " file=manuscript.md,line=" + (.Line | tostring) +
-            ",col=" + (.Span[0] | tostring) +
-            "::[Vale] " + .Check + ": " + .Message
-          ' vale.json | tee annotations.txt
-
-          count=$(wc -l < annotations.txt)
+          ./vale --output=.github/vale-annotations.tmpl manuscript.md | tee annotations.txt || true
+          count=$(grep -c '^::' annotations.txt || true)
           echo "Vale reported ${count} finding(s) in manuscript.md." >> "$GITHUB_STEP_SUMMARY"
