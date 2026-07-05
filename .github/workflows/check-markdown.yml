@@ -22,16 +22,12 @@ jobs:
           ./vale --version
       - name: Lint the Markdown manuscript
         run: |
-          # The prose is a plain Markdown file. Vale is a spell-checker, so strip
-          # the few inline LaTeX commands (\zcref, \LaTeX) it would otherwise flag
-          # as misspellings. The substitution is per-line, so line numbers are
-          # preserved and findings map straight back to manuscript.md — no block
-          # extraction or offset. German (manuscript-de.md) is skipped: these
-          # checks target English.
-          mkdir -p .vale-content
-          sed -E 's/\\[A-Za-z@]+\*?(\{[^}]*\})?//g' manuscript.md > .vale-content/manuscript.md
-
-          ./vale --output=JSON .vale-content > vale.json || true
+          # Vale lints manuscript.md directly. Its Markdown scope already ignores
+          # inline LaTeX — verified that \zcref{...}, \emph{...} etc. and their
+          # arguments are not spell-checked — so no pre-processing is needed and a
+          # plain local `vale manuscript.md` reproduces this exactly. German
+          # (manuscript-de.md) is skipped: these checks target English.
+          ./vale --output=JSON manuscript.md > vale.json || true
 
           # Emit GitHub workflow-command annotations anchored to manuscript.md
           # (https://docs.github.com/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
