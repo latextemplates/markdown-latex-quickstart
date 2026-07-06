@@ -22,22 +22,18 @@ jobs:
         run: |
           # The prose is a plain Markdown file, so textlint runs on it directly —
           # the reported line/column already point at manuscript.md, no extraction
-          # or offset needed. Rules come from .textlintrc.json. German
+          # or offset needed. Rules come from .textlintrc.json. textlint's built-in
+          # `github` formatter emits the ::error/::warning workflow-command
+          # annotations itself, so there is no JSON/jq post-processing. It prints
+          # absolute paths (result.filePath), so strip the workspace prefix to
+          # anchor the annotations to manuscript.md in the diff. German
           # (manuscript-de.md) is skipped: the write-good/terminology rules target
           # English.
           npx --yes \
             --package textlint \
             --package textlint-rule-terminology \
             --package textlint-rule-write-good \
-            textlint --format json manuscript.md > textlint.json || true
-
-          # Emit GitHub workflow-command annotations anchored to manuscript.md
-          # (https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
-          jq -r '
-            .[].messages[] |
-            "::warning file=manuscript.md,line=" + (.line | tostring) +
-            ",col=" + (.column | tostring) +
-            "::[textlint] " + .ruleId + ": " + .message
-          ' textlint.json | tee annotations.txt
-
-          echo "textlint reported $(wc -l < annotations.txt) finding(s) in manuscript.md." >> "$GITHUB_STEP_SUMMARY"
+            textlint --format github manuscript.md \
+            | sed "s|${GITHUB_WORKSPACE}/||g" | tee annotations.txt || true
+          count=$(grep -c '^::' annotations.txt || true)
+          echo "textlint reported ${count} finding(s) in manuscript.md." >> "$GITHUB_STEP_SUMMARY"
