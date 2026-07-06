@@ -1,5 +1,0 @@
-{{- /* Vale output template (--output=): emit GitHub Actions workflow-command
-       annotations directly, so check-markdown.yml needs no JSON/jq step.
-       https://docs.github.com/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message */ -}}
-{{- range .Files}}{{$p := .Path}}{{range .Alerts}}::{{if eq .Severity "error"}}error{{else if eq .Severity "warning"}}warning{{else}}notice{{end}} file={{$p}},line={{.Line}},col={{index .Span 0}}::[Vale] {{.Check}}: {{.Message}}
-{{end}}{{end -}}

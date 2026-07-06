@@ -9,26 +9,19 @@ on:
 concurrency:
   group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
   cancel-in-progress: true
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 jobs:
   vale:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v7
-      - name: Install Vale
-        run: |
-          VALE_VERSION=3.15.1
-          curl -sL "https://github.com/vale-cli/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" | tar -xz vale
-          ./vale --version
       - name: Lint the Markdown manuscript
-        run: |
-          # Vale lints manuscript.md directly. Its Markdown scope already ignores
-          # inline LaTeX — verified that \zcref{...}, \emph{...} etc. and their
-          # arguments are not spell-checked — so no pre-processing is needed and a
-          # plain local `vale manuscript.md` reproduces the same findings. The
-          # output template makes Vale emit GitHub workflow-command annotations
-          # itself, so there is no JSON/jq post-processing. German
-          # (manuscript-de.md) is skipped: these checks target English.
-          ./vale --output=.github/vale-annotations.tmpl manuscript.md | tee annotations.txt || true
-          count=$(grep -c '^::' annotations.txt || true)
-          echo "Vale reported ${count} finding(s) in manuscript.md." >> "$GITHUB_STEP_SUMMARY"
+        uses: vale-cli/vale-action@v2.1.1
+        with:
+          files: manuscript.md
+          reporter: github-check
+          fail_on_error: true
