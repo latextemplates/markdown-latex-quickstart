@@ -1,6 +1,6 @@
 # LaTeX Document
 
-This is a **minimal Markdown quick start**. Write your content in Markdown inside the `\begin{markdown} … \end{markdown}` block in [`main.tex`](main.tex); LaTeX turns it into a PDF — no thesis scaffolding, just the essentials: headings, citations, footnotes, tables, figures, and smart cross-references (`\zcref`).
+This is a **minimal Markdown quick start**. Write your content as plain Markdown in [`manuscript.md`](manuscript.md); the thin wrapper [`main.tex`](main.tex) pulls it in with `\markdownInput` and LaTeX turns it into a PDF — no thesis scaffolding, just the essentials: headings, citations, footnotes, tables, figures, smart cross-references (`\zcref`), and acronyms (defined once in the wrapper, recognized automatically in the running text and collected in an acronym list). Keeping the prose in a real `.md` file means your editor treats it as Markdown and the spell-/prose-checkers below lint it directly.
 
 ## Usage
 
@@ -63,19 +63,18 @@ On the command line, there are additional features:
 
 ### Linting your Markdown
 
-Two workflows lint the Markdown you write and post inline annotations on `main.tex`: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`).
+Because the prose is a plain Markdown file, the text linters run on it directly — no extraction, and the reported line numbers point straight at `manuscript.md`. Two workflows lint it and post inline annotations: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`).
 
-Run textlint locally with the bundled `lint.sh` — it extracts the Markdown body, lints it, and maps the findings back to `main.tex` line numbers, e.g. `main.tex:89:26: …` (needs `npx` and `jq`):
+Run textlint locally with `npx` (needs Node.js; rules come from `.textlintrc.json`):
 
 ```bash
-./lint.sh
+npx --yes --package textlint --package textlint-rule-terminology --package textlint-rule-write-good textlint manuscript.md
 ```
 
-For Vale, install it (`brew install vale` / `choco install vale`, or see <https://vale.sh/docs>) and lint the extracted body:
+For Vale, install it (`brew install vale` / `choco install vale`, or see <https://vale.sh/docs>) and point it at the file:
 
 ```bash
-sed -n '/\\begin{markdown}/,/\\end{markdown}/p' main.tex | sed '1d;$d' > body.md
-vale body.md
+vale manuscript.md
 ```
 
 ## Tool hints

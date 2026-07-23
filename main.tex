@@ -31,7 +31,7 @@
 % Option names follow the markdown package v3.x.
 \usepackage[
   citations,          % [@key] citation syntax
-  hybrid,             % pass raw LaTeX through (e.g. \zcref below)
+  hybrid,             % pass raw LaTeX through (e.g. \zcref in the manuscript)
   notes,              % [^label] referenced footnotes
   inlineNotes,        % ^[inline footnote text]
   pipeTables,         % | a | b | style tables
@@ -42,6 +42,7 @@
   headerAttributes,   % {#id} identifier on a heading
   linkAttributes,     % {#id} attributes on links/images
   relativeReferences, % <#id> to reference an id defined via {#id}
+  bracketedSpans,     % [text]{.class} spans, e.g. explicit acronym markup
 ]{markdown}
 
 % --- Bibliography: author-year via biblatex/biber ---
@@ -71,6 +72,23 @@
 % (swap for `colorlinks=true` if you prefer visible coloured links on screen).
 \usepackage[hidelinks, unicode, pdfusetitle]{hyperref}
 
+% --- Acronyms: define once, use anywhere in the Markdown text -------------
+% glossaries is the classic exception to "hyperref last": load it AFTER
+% hyperref so acronym uses and the acronym list are hyperlinked.
+\usepackage[acronym, nopostdot]{glossaries}
+\makeglossaries
+\setacronymstyle{long-short}    % how \gls renders entries; the markdown theme itself always prints the short form
+\newacronym{html}{HTML}{HyperText Markup Language}
+\newacronym{yaml}{YAML}{YAML Ain't Markup Language}
+% Make the markdown package recognize the acronyms defined above right in the
+% running Markdown text -- no \gls calls needed in the manuscript. Explicit
+% markup like [JSON]{.acronym} also works, even for undefined acronyms.
+% See https://github.com/Witiko/markdown/issues/615 for background.
+\markdownSetup{
+  import  = witiko/glossaries@v1,
+  snippet = witiko/glossaries/import-acronyms,
+}
+
 \title{My Book}
 \author{Martha Mildenhall}
 \date{\today}
@@ -83,58 +101,14 @@
 
 \mainmatter
 
-\begin{markdown}
-# Introduction {#cha:introduction}
-
-This entire book content is written in **Markdown**. Top-level headings (`#`)
-automatically become chapters, `##` become sections, matching the `scrbook`
-document class. This heading carries the Markdown id `{#cha:introduction}`,
-from which the package generates a `\label`.
-
-A citation looks like this [@mwe], and here is a footnote.^[This is an inline
-footnote.] Referenced footnotes work as well[^detail].
-
-[^detail]: This is a more detailed footnote at the end of the section.
-
-## Motivation
-
-- first point
-- second point
-  - sub-point
-1) firstly
-2) secondly
-
-Task lists (`taskLists`) are possible too:
-
-- [ ] a still-open item
-- [x] an already-completed item
-
-As shown in \zcref{fig:example}, images can be referenced directly from
-Markdown. The plain Markdown reference `<#fig:example>` yields only the bare
-number (<#fig:example>), without the type name Figure.
-
-![An example image](example-image "An example image"){#fig:example}
-
-## A Table
-
-\zcref{tbl:example} shows the four alignment variants of `pipeTables`.
-
-| Right | Left | Default | Centred |
-|------:|:-----|---------|:-------:|
-|    12 | 12   | 12      |   12    |
-|   123 | 123  | 123     |   123   |
-
-: Example table with alignments {#tbl:example}
-
-# Another Chapter
-
-Text referring to the previous chapter: \zcref{cha:introduction}. Because the
-heading carries the Markdown id `{#cha:introduction}` and every `\label`
-additionally becomes a `\zlabel`, `\zcref` works here without any raw \LaTeX{}
-to set the mark -- e.g. also on \zcref{tbl:example}.
-\end{markdown}
+% The prose lives in a separate, pure-Markdown file so your editor sees Markdown
+% (not LaTeX) and the spell-/prose-checkers (Vale, textlint) lint it directly.
+% `hybrid` (set above) still lets the file pass raw LaTeX such as \zcref through.
+\markdownInput{manuscript.md}
 
 \backmatter
+
+\printacronyms
 
 \printbibliography
 

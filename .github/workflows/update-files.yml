@@ -63,10 +63,10 @@ jobs:
         working-directory: /tmp/ltg
         run: |
           if [ "${{ matrix.lang }}" == "de" ]; then
-            # mwe always emits main.tex; keep the German one as main-de.tex and
-            # let the English job own every shared file.
-            mv main.tex main-de.tex
-            cp main-de.tex "$GITHUB_WORKSPACE/main-de.tex"
+            # The generator emits the German wrapper and its Markdown manuscript
+            # with -de suffixes (main-de.tex / manuscript-de.md); the English job
+            # owns every shared file.
+            cp main-de.tex manuscript-de.md "$GITHUB_WORKSPACE"
           else
             # the LICENSE of the repository should be kept
             rm LICENSE
