@@ -9,43 +9,19 @@ on:
 concurrency:
   group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
   cancel-in-progress: true
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 jobs:
   vale:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v7
-      - name: Install Vale
-        run: |
-          VALE_VERSION=3.15.1
-          curl -sL "https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" | tar -xz vale
-          ./vale --version
-      - name: Lint the Markdown body of main.tex
-        run: |
-          # The prose lives inside \begin{markdown} … \end{markdown}. Extract it
-          # (dropping the two delimiter lines) and strip inline LaTeX commands so
-          # Vale lints prose, not markup. The sed edits keep the line COUNT, so a
-          # finding on extracted line L maps to main.tex line L + OFFSET, where
-          # OFFSET is the line of \begin{markdown}. German (main-de.tex) is
-          # skipped: Vale's checks here target English.
-          OFFSET=$(grep -n '^\\begin{markdown}' main.tex | head -1 | cut -d: -f1)
-          mkdir -p .vale-content
-          sed -n '/^\\begin{markdown}/,/^\\end{markdown}/p' main.tex | sed '1d;$d' \
-            | sed -E 's/\\[A-Za-z@]+\*?(\{[^}]*\})?//g' > .vale-content/main.md
-
-          ./vale --output=JSON .vale-content > vale.json || true
-
-          # Emit GitHub workflow-command annotations anchored to main.tex
-          # (https://docs.github.com/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message)
-          jq -r --argjson off "$OFFSET" '
-            to_entries[] | .value[] |
-            "::" + (if .Severity == "error" then "error"
-                    elif .Severity == "warning" then "warning"
-                    else "notice" end) +
-            " file=main.tex,line=" + ((.Line + $off) | tostring) +
-            ",col=" + (.Span[0] | tostring) +
-            "::[Vale] " + .Check + ": " + .Message
-          ' vale.json | tee annotations.txt
-
-          count=$(wc -l < annotations.txt)
-          echo "Vale reported ${count} finding(s) in the Markdown body of main.tex." >> "$GITHUB_STEP_SUMMARY"
+      - name: Lint the Markdown manuscript
+        uses: vale-cli/vale-action@v2.1.1
+        with:
+          files: manuscript.md
+          reporter: github-check
+          fail_on_error: true
