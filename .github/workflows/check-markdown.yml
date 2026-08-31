@@ -20,7 +20,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v7
       - name: Lint the Markdown manuscript
-        uses: vale-cli/vale-action@v2.1.1
+        uses: vale-cli/vale-action@v3.0.0
         with:
           files: manuscript.md
           reporter: github-check
