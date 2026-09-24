@@ -212,7 +212,7 @@ Any derived work can freely be relicensed and can omit original copyright and li
 [biblatex]: http://tex.stackexchange.com/tags/biblatex/info
 [bibtex]: https://www.ctan.org/pkg/bibtex
 [booktabs]: https://ctan.org/pkg/booktabs
-[cleveref]: https://ctan.org/pkg/cleveref
+[zref-clever]: https://ctan.org/pkg/zref-clever
 [csquotes]: https://www.ctan.org/pkg/csquotes
 [hypcap]: https://www.ctan.org/pkg/hypcap
 [hyperref]: https://ctan.org/pkg/hyperref
