@@ -10,6 +10,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Changed
 
 - `_latexmkrc` is organized in sections and lists commented-out alternatives for continuous preview (`-pvc`), the job name, and the PDF viewer (e.g., evince).
+- A sentence-initial `Finally,` is allowed by textlint (`.textlintrc.json`), because it marks a sequence rather than weakening a statement.
 
 ### Fixed
 
