@@ -41,7 +41,7 @@
   taskLists,          % - [ ] / - [x] checkbox lists
   headerAttributes,   % {#id} identifier on a heading
   linkAttributes,     % {#id} attributes on links/images
-  relativeReferences, % <#id> to reference an id defined via {#id}
+  relativeReferences, % <#id> to reference an id defined via {#id} (typeset by \zcref, see below)
   bracketedSpans,     % [text]{.class} spans, e.g. explicit acronym markup
 ]{markdown}
 
@@ -88,6 +88,25 @@
   import  = witiko/glossaries@v1,
   snippet = witiko/glossaries/import-acronyms,
 }
+
+% Markdown's own reference syntax <#id> typesets the bare number (\ref).
+% Typeset it with \zcref instead, so that "<#tbl:example> shows" reads "Table 1 shows".
+% Other links are rendered as before.
+\ExplSyntaxOn
+\cs_new_protected:Npn \ltg_markdown_link:nnnn #1#2#3#4
+{
+  \tl_set:Nx \l_tmpa_tl { \tl_range:nnn {#3} { 1 } { 1 } }
+  \bool_lazy_all:nTF
+  {
+    { \str_if_eq_p:nn {#1} {#2} }
+    { \str_if_eq_p:VV \l_tmpa_tl \c_hash_str }
+    { \tl_if_empty_p:n {#4} }
+  }
+  { \exp_args:Nx \zcref { \tl_range:nnn {#3} { 2 } { -1 } } }
+  { \markdownRendererLinkPrototype {#1} {#2} {#3} {#4} }
+}
+\markdownSetup{ renderers = { link = { \ltg_markdown_link:nnnn {#1} {#2} {#3} {#4} } } }
+\ExplSyntaxOff
 
 \title{My Book}
 \author{Martha Mildenhall}
