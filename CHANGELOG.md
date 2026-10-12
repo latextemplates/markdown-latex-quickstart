@@ -9,6 +9,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Changed
 
+- The markdown package's cache directory (`_markdown_*/`) is ignored by git.
 - The README's tool hints distinguish a Docker-based setup (recommended) from a traditional installation: the [TeX Live image by the Island of TeX](https://gitlab.com/islandoftex/images/texlive) works the same on Windows, macOS, and Linux and makes `minted` work without a separate Python setup. The "Usage with docker" section and the VS Code hints (LaTeX Workshop can compile in the container) are linked from there.
 
 ## [2026-10-08]
