@@ -11,6 +11,10 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 - The document is laid out single-sided, because it is read on screen: every page has the same margins and there are no blank pages before chapters. For two-sided printing, replace `twoside=false, open=any` by `twoside, open=right` (see the comment at the document class options).
 
+### Fixed
+
+- `.dockerignore` excludes the generated `figures/*.pdf_tex` files (it named the old `graphics/` directory). [generator-latex-template#586](https://github.com/latextemplates/generator-latex-template/pull/586)
+
 ## [2026-10-14]
 
 ### Changed
