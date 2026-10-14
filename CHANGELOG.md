@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The document is laid out single-sided, because it is read on screen: every page has the same margins and there are no blank pages before chapters. For two-sided printing, replace `twoside=false, open=any` by `twoside, open=right` (see the comment at the document class options).
+
 ## [2026-10-14]
 
 ### Changed
