@@ -34,6 +34,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 - `.dockerignore` excludes the generated `figures/*.pdf_tex` files. [generator-latex-template#586](https://github.com/latextemplates/generator-latex-template/pull/586)
 - The `.markdown.in` file of the markdown package is ignored by git and removed by `latexmk -c`.
 - `make view` opens the PDF on Linux and macOS.
+- `vscode.settings.json`: the recipes run `lualatex` (resp. `pdflatex`) with the right bibliography tool.
 
 ## [2026-10-14]
 
