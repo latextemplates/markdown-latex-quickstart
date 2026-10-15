@@ -9,7 +9,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Changed
 
-- The document is laid out single-sided, because it is read on screen: every page has the same margins and there are no blank pages before chapters. For two-sided printing, replace `twoside=false, open=any` by `twoside, open=right` (see the comment at the document class options).
+- The document is laid out single-sided.
 - `make format` (and thus CI) indents all main files (`main*.tex`), not only `MASTER_TEX`.
 - VS Code: the recommended extension is `james-yu.latex-workshop` (`manhen.latex-workshop-2` was removed from the stores).
 - VS Code: the background of the PDF viewer follows the light or dark theme.
