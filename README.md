@@ -57,8 +57,6 @@ To have `minted` running with a traditional installation, you have to do followi
 
 1. Install python: `choco install python` - that uses [chocolatey](https://chocolatey.org/) to install Python
 2. Install [latexminted]: `pip install latexminted` - that uses the Python package manager to install the minted library
-3. When latexing, use `-shell-escape`: `pdflatex -shell-escape main`.
-   You can also just execute `latexmk main`.
 ### latexmk hints
 
 [latexmk] runs the LaTeX tools (e.g., lualatex and biber) as often as needed to get the final PDF ([why `latexmk` is great](https://tex.stackexchange.com/a/249243/9075)).
@@ -171,7 +169,7 @@ Add the same comment to further `.tex` files.
 In case something goes wrong, you can instruct the LaTeX compiler to stop at the first error:
 
 ```bash
-lualatex --synctex=1 --shell-escape main
+lualatex --synctex=1 main
 ```
 
 Run `biber main` to get the bibliography rendered (execute `lualatex` afterwards).
