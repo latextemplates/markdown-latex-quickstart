@@ -7,6 +7,10 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `make log` shows the relevant messages of the LaTeX log (texlogsieve).
+
 ### Changed
 
 - The document is laid out single-sided.
