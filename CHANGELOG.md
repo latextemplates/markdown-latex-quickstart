@@ -10,6 +10,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Changed
 
 - The document is laid out single-sided, because it is read on screen: every page has the same margins and there are no blank pages before chapters. For two-sided printing, replace `twoside=false, open=any` by `twoside, open=right` (see the comment at the document class options).
+- `make format` (and thus the latexindent check in CI) indents all main files (`main*.tex`), not only `MASTER_TEX`. A badly indented variant no longer goes unnoticed until it is made the `MASTER_TEX`.
 
 ### Fixed
 
