@@ -176,7 +176,7 @@ lualatex --synctex=1 --shell-escape main
 
 Run `biber main` to get the bibliography rendered (execute `lualatex` afterwards).
 
-### Q: How do I check a passage in another language?
+### Q: How do I spell check a passage in another language?
 
 Use the `\foreignlanguage{language}{text}` command.
 LTeX+ will detect these elements and automatically switch the spell checker's language.
