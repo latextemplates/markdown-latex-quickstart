@@ -26,7 +26,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 - README.md: "Usage with docker" merged into "Docker-based (recommended)".
 - `.latexmkrc` replaces `_latexmkrc`; it works on Overleaf, too.
 - `make` runs the LaTeX tools in the Docker image (`make LOCAL=1` runs them locally).
-- `vscode.settings.json` compiles with `latexmk` in the Docker image.
+- `vscode.settings.json` contains the Docker settings of LaTeX Workshop and does not build on save.
 - README.md: compilation hints consolidated in "LaTeX compilation".
 
 ### Fixed
