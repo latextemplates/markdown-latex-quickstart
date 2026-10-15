@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `make log` shows the relevant messages of the LaTeX log (texlogsieve).
+
+### Changed
+
+- The document is laid out single-sided.
+- `make format` (and thus CI) indents all main files (`main*.tex`), not only `MASTER_TEX`.
+- VS Code: the recommended extension is `james-yu.latex-workshop` (`manhen.latex-workshop-2` was removed from the stores).
+- VS Code: the background of the PDF viewer follows the light or dark theme.
+- Dependabot groups all GitHub Actions updates into one weekly PR.
+- `check.yml` pins all GitHub Actions to commit SHAs.
+- README.md: sections reordered.
+- README.md: on Overleaf, select TeX Live 2026.
+- README.md: passages in another language are an FAQ.
+- README.md: links the decision records of the template generator.
+- README.md: "Usage with docker" merged into "Docker-based (recommended)".
+- `.latexmkrc` replaces `_latexmkrc`; it works on Overleaf, too.
+- `make` runs the LaTeX tools in the Docker image (`make LOCAL=1` runs them locally).
+- `vscode.settings.json` contains the Docker settings of LaTeX Workshop and does not build on save.
+- README.md: compilation hints consolidated in "LaTeX compilation".
+
+### Fixed
+
+- `.dockerignore` excludes the generated `figures/*.pdf_tex` files. [generator-latex-template#586](https://github.com/latextemplates/generator-latex-template/pull/586)
+- The `.markdown.in` file of the markdown package is ignored by git and removed by `latexmk -c`.
+- `make view` opens the PDF on Linux and macOS.
+- `vscode.settings.json`: the recipes run `lualatex` (resp. `pdflatex`) with the right bibliography tool.
+
 ## [2026-10-14]
 
 ### Changed

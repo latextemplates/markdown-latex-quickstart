@@ -4,89 +4,16 @@ This is a **minimal Markdown quick start**. Write your content as plain Markdown
 
 The LaTeX snippets this template is assembled from can be inspected at <https://latextemplates.github.io/latex-snippets/>.
 
-## Usage
+## Quick start
 
-- `main.tex` is the main document
-- Use "lualatex + biblatex" in your TeX editor or `latexmk main` / `make` in the command line
+- Write your text in [`manuscript.md`](manuscript.md).
+- Compile with "lualatex + biber" in your TeX editor or with `latexmk main` / `make` on the command line.
 
-### Using `latexmk`
+## LaTeX compilation
 
-[latexmk] is a very smart tool for latex compilation.
-It executes the latex tools as often as needed to get the final PDF.
-(More information about why `latexmk` is great can be found at <https://tex.stackexchange.com/a/249243/9075>.)
+Compile either in a Docker container (recommended) or with a LaTeX distribution installed on your machine.
 
-To build the whole document, execute following command.
-Note that this requires a working perl installation.
-
-```bash
-latexmk main
-```
-
-To enable latexmk, please move `_latexmkrc` to `latexmkrc`.
-
-If you want automatic compilation use following command:
-
-```bash
-latexmk -pvc main
-```
-
-This will also open a [Sumatra PDF] and only works with the supplied configuration.
-
-#### latexmk configuration
-
-This repository ships a `.latexmkrc` which is read by latexmk.
-In case there is a `_latexmkrc` file, you need to rename it to `.latexmkrc`.
-It is configured for Windows and especially sets Sumatra PDF as default PDF viewer.
-You can make this local configuration a global configuration, when you put it at [the right place](http://tex.stackexchange.com/a/41149/9075).
-
-If you want to add more packages, configure it there.
-For instance, for support of `makeglossaries` see <http://tex.stackexchange.com/questions/1226/how-to-make-latexmk-use-makeglossaries>.
-
-### Debugging LaTeX errors
-
-In case something goes wrong, you can instruct the LaTeX compiler to stop at the first error:
-
-```bash
-lualatex --synctex=1 --shell-escape main
-```
-
-Run `biber main` to get the bibliography rendered (execute `lualatex` afterwards).
-
-### Advanced usage
-
-On the command line, there are additional features:
-
-- `latexmk -C` or `make clean` for cleaning up
-- `make format` to reformat the `.tex` files (one sentence per line and indent)
-- `make aspell` for interactive spell checking
-- `make stand`: Creates a new PDF with the current status of the document.
-- `make view`: Opens the configured viewer
-- `make mrproper`: Cleans up and removes also editor backup files.
-
-### Linting your Markdown
-
-Because the prose is a plain Markdown file, the text linters run on it directly — no extraction, and the reported line numbers point straight at `manuscript.md`. Two workflows lint it and post inline annotations: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`).
-
-Run textlint locally with `npx` (needs Node.js; rules come from `.textlintrc.json`):
-
-```bash
-npx --yes --package textlint --package textlint-rule-terminology --package textlint-rule-write-good textlint manuscript.md
-```
-
-For Vale, install it (`brew install vale` / `choco install vale`, or see <https://vale.sh/docs>) and point it at the file:
-
-```bash
-vale manuscript.md
-```
-
-## Tool hints
-
-### Prerequisites
-
-You need a LaTeX distribution.
-Choose one of the two setups.
-
-#### Docker-based (recommended)
+### Docker-based (recommended)
 
 The [TeX Live docker image by the Island of TeX](https://gitlab.com/islandoftex/images/texlive#tex-live-docker-image) works the same on Windows, macOS, and Linux.
 It ships a complete TeX Live including `latexmk`, `biber`, `latexindent`, Python, and [latexminted].
@@ -116,7 +43,9 @@ Thus, `minted` works out of the box - also on Windows, without a separate Python
 
 1. Optional: Let VS Code compile in the container, see ["VS Code configuration"](#vs-code-configuration).
 
-#### Traditional
+If you need additional tools in the image (for instance, PlantUML), extend the generated `Dockerfile`, build it with `docker build -t ltg .`, and use `ltg` instead of the image name.
+
+### Traditional
 
 Install a LaTeX distribution on your machine:
 
@@ -128,10 +57,33 @@ To have `minted` running with a traditional installation, you have to do followi
 
 1. Install python: `choco install python` - that uses [chocolatey](https://chocolatey.org/) to install Python
 2. Install [latexminted]: `pip install latexminted` - that uses the Python package manager to install the minted library
-3. When latexing, use `-shell-escape`: `pdflatex -shell-escape main`.
-   You can also just execute `latexmk main`.
+### latexmk hints
 
-#### Editor and bibliography
+[latexmk] runs the LaTeX tools (e.g., lualatex and biber) as often as needed to get the final PDF ([why `latexmk` is great](https://tex.stackexchange.com/a/249243/9075)).
+It reads its configuration from `.latexmkrc` in the directory of the document.
+Overleaf reads `.latexmkrc`, too, so the "Compiler" setting of the Overleaf project does not matter; select TeX Live 2026 there.
+To use the configuration for all your documents, put it at [the right place](http://tex.stackexchange.com/a/41149/9075).
+
+Build the document:
+
+```bash
+latexmk main
+```
+
+In the Docker-based setup, put the `docker run ...` part from ["Docker-based (recommended)"](#docker-based-recommended) in front, or just run `make`.
+In the traditional setup, `latexmk` needs Perl (TeX Live ships it; with MiKTeX, install it, e.g., via `choco install strawberryperl`).
+
+To recompile on every change and open the PDF, run:
+
+```bash
+latexmk -pvc main
+```
+
+On Windows, the configuration opens the PDF in [Sumatra PDF], which reloads the PDF automatically.
+
+## Tool hints
+
+### Editor and bibliography
 
 Independent of the chosen setup:
 
@@ -141,6 +93,35 @@ Independent of the chosen setup:
   **If TeXstudio doesn't fit your need, check [the list of all available LaTeX Editors](http://tex.stackexchange.com/questions/339/latex-editors-ides).**
 - Use [JabRef] to manage your bibliography (Windows: `choco install jabref`).
 
+### Advanced usage
+
+On the command line, there are additional features:
+
+- `make` builds the PDF in the Docker container; `make LOCAL=1` uses your local LaTeX distribution (this works for all `make` targets)
+- `latexmk -C` or `make clean` for cleaning up
+- `make log` shows only the relevant messages of the last LaTeX run (using [texlogsieve](https://ctan.org/pkg/texlogsieve))
+- `make format` to reformat the `.tex` files (one sentence per line and indent)
+- `make aspell` for interactive spell checking
+- `make stand`: Creates a new PDF with the current status of the document.
+- `make view`: Opens the configured viewer
+- `make mrproper`: Cleans up and removes also editor backup files.
+
+### Linting your Markdown
+
+Because the prose is a plain Markdown file, the text linters run on it directly — no extraction, and the reported line numbers point straight at `manuscript.md`. Two workflows lint it and post inline annotations: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`).
+
+Run textlint locally with `npx` (needs Node.js; rules come from `.textlintrc.json`):
+
+```bash
+npx --yes --package textlint --package textlint-rule-terminology --package textlint-rule-write-good textlint manuscript.md
+```
+
+For Vale, install it (`brew install vale` / `choco install vale`, or see <https://vale.sh/docs>) and point it at the file:
+
+```bash
+vale manuscript.md
+```
+
 ### VS Code configuration
 
 Currently, following extensions are recommended:
@@ -149,78 +130,53 @@ Currently, following extensions are recommended:
 - [LaTeX Utilities](https://marketplace.visualstudio.com/items?itemName=tecosaur.latex-utilities) to enhance LaTeX Workshop
 - [LTeX+] to have a nice spell checker that also identifies grammar issues
 
-Then, change the setting of LaTeX Workshop to use `biber`:
-
-Press <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd> to open the command palette.
-Then type "JSON" and select "Preferences: Open Settings (JSON)" to open `settings.json`.
-
-Update the following lines in VS Code's `settings.json` to contain:
-
-```javascript
-    "latex-workshop.latex.recipes": [
-        {
-            "name": "lualatex ➞ biblatex ➞ lualatex × 2 🔃",
-            "tools": [
-                "lualatex",
-                "biblatex",
-                "lualatex",
-                "lualatex"
-            ]
-        },
-    ],
-    "latex-workshop.latex.tools": [
-        // ...
-        {
-            "name": "biblatex",
-            "command": "biblatex",
-            "args": [
-                "%DOCFILE%"
-            ],
-            "env": {}
-        },
-        // ...
-    ],
-```
-
-The following settings are additionally recommended:
-
-```javascript
-{
-    "editor.wordWrap": "on",                              // enable soft line breaks
-    "latex-workshop.view.pdf.viewer": "tab",              // display the generaded PDF in a separate tab
-    "latex-workshop.view.pdf.backgroundColor": "#cccccc", // use a darker background in de PDF viewer to lift of the pages from it
-    "latex-workshop.latex.autoBuild.run": "never",        // never automatically build; alternative: "onSave" (on saving .tex files)
-    "editor.renderWhitespace": "all",                     // display all whitespaces
-}
-```
-
-Alternatively, just copy and paste the contents of the [vscode.settings.json](vscode.settings.json) file to your VS Code settings file.
-
-With the Docker-based setup (see ["Prerequisites"](#prerequisites)), LaTeX Workshop can run the LaTeX tools in the container instead of on your machine.
-This is an experimental feature of LaTeX Workshop; the recipes and tools stay the same.
+With the settings below, LaTeX Workshop compiles with the recipe "lualatex ➞ biber ➞ lualatex × 2".
+To compile in the Docker container (see ["Docker-based (recommended)"](#docker-based-recommended)), add the following lines to VS Code's `settings.json` (<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>, then "Preferences: Open Settings (JSON)"):
 
 ```javascript
     "latex-workshop.docker.enabled": true,
     "latex-workshop.docker.image.latex": "registry.gitlab.com/islandoftex/images/texlive:latest",
 ```
 
-You can manually trigger compilation by hitting the green button in the extension or using other methods provided by LaTeX Workshop.
+The following settings are additionally recommended:
 
-Please remove the magic comments (`% !TeX program ...`) at the top of the `main.tex` file.
-Although [LaTeX-Workshop supports magic comments](https://github.com/James-Yu/LaTeX-Workshop/blob/master/README.md#magic-comments), it currently does not work reliably.
-Without the magic comments, compilation works.
+```javascript
+{
+    "editor.wordWrap": "on",                                          // enable soft line breaks
+    "latex-workshop.view.pdf.viewer": "tab",                          // display the generated PDF in a separate tab
+    "latex-workshop.view.pdf.color.light.backgroundColor": "#cccccc", // light theme: use a darker background in the PDF viewer to lift the pages off it
+    "latex-workshop.view.pdf.color.dark.backgroundColor": "#121314",  // dark theme: same, with a dark gray matching the editor
+    "latex-workshop.latex.autoBuild.run": "never",                    // never automatically build; alternative: "onSave" (on saving .tex files)
+    "editor.renderWhitespace": "all",                                 // display all whitespaces
+}
+```
+
+Alternatively, just copy and paste the contents of the [vscode.settings.json](vscode.settings.json) file to your VS Code settings file.
+
+You can manually trigger compilation by hitting the green button in the extension or using other methods provided by LaTeX Workshop.
 
 ### LTeX+ tips and tricks
 
 [LTeX+] is an offline grammar and spell checker with support for LaTeX and Markdown.
 
-Add a magic comment to your files to tell LTeX+ which language to use:
+The main file starts with a magic comment that tells LTeX+ the language of the document, e.g., `% LTeX: language=en-US`.
+Add the same comment to further `.tex` files.
 
-```latex
-% LTeX: language=de-DE
+## FAQs
+
+### Q: How do I find the cause of a LaTeX error?
+
+In case something goes wrong, you can instruct the LaTeX compiler to stop at the first error:
+
+```bash
+lualatex --synctex=1 main
 ```
 
-If you want to use different languages in the text, use the `\foreignlanguage{language}{text}` command.
+Run `biber main` to get the bibliography rendered (execute `lualatex` afterwards).
+
+### Q: How do I spell check a passage in another language?
+
+Use the `\foreignlanguage{language}{text}` command.
 LTeX+ will detect these elements and automatically switch the spell checker's language.
 For example:
 
@@ -228,15 +184,9 @@ For example:
 \foreignlanguage{english}{Therefore, our proposed approach will change the world.}
 ```
 
-## Usage with docker
-
-The [TeX Live image by the Island of TeX](https://gitlab.com/islandoftex/images/texlive#tex-live-docker-image) is used as is - there is no need to build an own image.
-See ["Docker-based (recommended)"](#docker-based-recommended) for the installation of Docker and the commands to compile on Windows, Linux, and macOS.
-
-If you need additional tools in the image (for instance, PlantUML), extend the generated `Dockerfile`, build it with `docker build -t ltg .`, and use `ltg` instead of the image name.
-
 ## Further information
 
+- Why the templates use which packages: [decision records of the template generator](https://github.com/latextemplates/generator-latex-template/tree/main/docs/decisions)
 - Other templates: <https://latextemplates.github.io/>
 - For German users, go to <https://texfragen.de/>.
 - Frank Mittelbach with Ulrike Fischer: [The LaTeX Companion](https://www.latex-project.org/news/2023/03/17/TLC3/) is the ultimate guide for LaTeX: The authors went through all packages offered by [CTAN](https://ctan.org/), selected the most promising ones, described them, and provide minimal working example for each of it.
