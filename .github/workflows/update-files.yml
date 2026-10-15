@@ -97,8 +97,6 @@ jobs:
       - run: |
           # ensure latest updates
           git pull
-          # latexmkrc is shipped as _latexmkrc for easy Overleaf usage
-          cp _latexmkrc latexmkrc
       - name: Install TeX Live
         uses: zauguin/install-texlive@v4
         with:
