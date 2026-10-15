@@ -10,11 +10,16 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Changed
 
 - The document is laid out single-sided, because it is read on screen: every page has the same margins and there are no blank pages before chapters. For two-sided printing, replace `twoside=false, open=any` by `twoside, open=right` (see the comment at the document class options).
-- `make format` (and thus the latexindent check in CI) indents all main files (`main*.tex`), not only `MASTER_TEX`. A badly indented variant no longer goes unnoticed until it is made the `MASTER_TEX`.
+- `make format` (and thus CI) indents all main files (`main*.tex`), not only `MASTER_TEX`.
+- VS Code: the recommended extension is `james-yu.latex-workshop` (`manhen.latex-workshop-2` was removed from the stores).
+- VS Code: the background of the PDF viewer follows the light or dark theme.
+- Dependabot groups all GitHub Actions updates into one weekly PR.
+- `check.yml` pins all GitHub Actions to commit SHAs.
 
 ### Fixed
 
-- `.dockerignore` excludes the generated `figures/*.pdf_tex` files (it named the old `graphics/` directory). [generator-latex-template#586](https://github.com/latextemplates/generator-latex-template/pull/586)
+- `.dockerignore` excludes the generated `figures/*.pdf_tex` files. [generator-latex-template#586](https://github.com/latextemplates/generator-latex-template/pull/586)
+- The `.markdown.in` file of the markdown package is ignored by git and removed by `latexmk -c`.
 
 ## [2026-10-14]
 
