@@ -7,6 +7,10 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- VS Code: [JabRef 4 VSCode](https://marketplace.visualstudio.com/items?itemName=jabref.jabref-4-vscode) recommended.
+
 ### Changed
 
 - `make spellcheck` runs all spell checkers (`make aspell` is now `make spellcheck-aspell`).
