@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- VS Code: [JabRef 4 VSCode](https://marketplace.visualstudio.com/items?itemName=jabref.jabref-4-vscode) recommended.
+
+### Changed
+
+- `make spellcheck` runs all spell checkers (`make aspell` is now `make spellcheck-aspell`).
+- GitHub workflows: actions pinned to commit SHAs.
+
+### Fixed
+
+- Makefile: `.PHONY` lists all targets; `make spellcheck-aspell` and `make showundef` work.
+
 ## [2026-10-15]
 
 ### Added

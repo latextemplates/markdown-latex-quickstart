@@ -43,7 +43,7 @@ Thus, `minted` works out of the box - also on Windows, without a separate Python
 
 1. Optional: Let VS Code compile in the container, see ["VS Code configuration"](#vs-code-configuration).
 
-If you need additional tools in the image (for instance, PlantUML), extend the generated `Dockerfile`, build it with `docker build -t ltg .`, and use `ltg` instead of the image name.
+If you need additional tools in the image, extend the generated `Dockerfile`, build it with `docker build -t ltg .`, and use `ltg` instead of the image name.
 
 ### Traditional
 
@@ -101,7 +101,8 @@ On the command line, there are additional features:
 - `latexmk -C` or `make clean` for cleaning up
 - `make log` shows only the relevant messages of the last LaTeX run (using [texlogsieve](https://ctan.org/pkg/texlogsieve))
 - `make format` to reformat the `.tex` files (one sentence per line and indent)
-- `make aspell` for interactive spell checking
+- `make spellcheck` runs all spell checkers:
+  - `make spellcheck-aspell` for interactive spell checking with aspell
 - `make stand`: Creates a new PDF with the current status of the document.
 - `make view`: Opens the configured viewer
 - `make mrproper`: Cleans up and removes also editor backup files.
@@ -129,6 +130,7 @@ Currently, following extensions are recommended:
 - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) to support LaTeX in VS Code and
 - [LaTeX Utilities](https://marketplace.visualstudio.com/items?itemName=tecosaur.latex-utilities) to enhance LaTeX Workshop
 - [LTeX+] to have a nice spell checker that also identifies grammar issues
+- [JabRef 4 VSCode](https://marketplace.visualstudio.com/items?itemName=jabref.jabref-4-vscode) to use the language server and further features of [JabRef] in VS Code
 
 With the settings below, LaTeX Workshop compiles with the recipe "lualatex ➞ biber ➞ lualatex × 2".
 To compile in the Docker container (see ["Docker-based (recommended)"](#docker-based-recommended)), add the following lines to VS Code's `settings.json` (<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>, then "Preferences: Open Settings (JSON)"):

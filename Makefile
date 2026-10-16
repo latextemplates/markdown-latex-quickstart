@@ -48,9 +48,10 @@ date=$(shell date +%Y%m%d%H%M)
 
 
 ## was wird gemacht, falls nur make aufgerufen wird
-## hier sollte noch der aspell check rein für jedes file einzeln über for schleife
 all: $(PDF)
-.PHONY: $(PDF)
+
+## Targets that do not create a file of their name; $(PDF) is phony as latexmk decides whether to rebuild
+.PHONY: all compile $(PDF) clean final mrproper pdf stand html view edit spellcheck spellcheck-aspell log showundef format indent split-sentences
 
 compile: $(PDF)
 
@@ -94,27 +95,27 @@ edit:
 
 # Support
 
-## Rechtschreibung
-##
-## Das Ganze am Besten vor der final und als eigene Version ala "make aspell"
+## Spell checking: "make spellcheck" runs all spell checkers, "make spellcheck-<tool>" one of them
+spellcheck: spellcheck-aspell
+
+## Interactive spell checking with aspell (needs a local aspell installation)
 ##
 ## .aspell.conf - zu ignorierende LaTeX-Befehle
 ##   Schreiben der LaTeX-Befehle in eine config Dateiname. Sieht so aus:
 ##   add-tex-command democommand PO // PO := prüfe []{} ;; po := ignoriere []{}
 ##
 ## .aspell.en.pws - persönliches Wörterbuch
-aspell:
-	for tex in $(TEX_FILES);
-		do
-			aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c $$tex;
-		done
+spellcheck-aspell:
+	for tex in $(TEX_FILES); do \
+		aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$tex" || exit 1; \
+	done
 
 ## Show only the relevant messages of the last LaTeX run
 log:
 	$(RUN) texlogsieve --no-heartbeat $(SRC).log
 
 showundef:
-	grep undefined $(LOG)
+	grep undefined $(SRC).log
 
 
 ## Reformatierung
