@@ -32,8 +32,8 @@ LITERATURE = bibliography.bib
 
 ## Derived file names
 SRC = $(shell basename $(MASTER_TEX) .tex)
-TEX_FILES = $(wildcard *.tex content/*.tex)
-## All main files, including variants of MASTER_TEX (e.g., other languages): "make format" indents each of them
+TEX_FILES = $(wildcard *.tex)
+## All main files, including variants of MASTER_TEX (e.g., other languages): "make format" indents each of them and the chapters
 MAIN_TEX_FILES = $(wildcard main*.tex)
 GFX_FILES = $(wildcard figures/*)
 
@@ -106,7 +106,8 @@ spellcheck: spellcheck-aspell
 ##
 ## .aspell.en.pws - persönliches Wörterbuch
 spellcheck-aspell:
-	for tex in $(TEX_FILES); do \
+	for tex in *.tex chapters/*.en.tex; do \
+		[ -e "$$tex" ] || continue; \
 		aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$tex" || exit 1; \
 	done
 
@@ -121,7 +122,10 @@ showundef:
 ## Reformatierung
 
 format:
-	for f in $(MAIN_TEX_FILES); do $(RUN) latexindent -l -s -sl -w "$$f" || exit 1; done
+	for f in $(MAIN_TEX_FILES) chapters/*.tex; do \
+		[ -e "$$f" ] || continue; \
+		$(RUN) latexindent -l -s -sl -w "$$f" || exit 1; \
+	done
 
 indent:
 	$(RUN) latexindent -y="indentPreamble:1,defaultIndent:'  '" -m -w $(SRC)
