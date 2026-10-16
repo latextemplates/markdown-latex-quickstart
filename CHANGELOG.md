@@ -14,6 +14,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Changed
 
 - `make spellcheck` runs all spell checkers (`make aspell` is now `make spellcheck-aspell`).
+- GitHub workflows: actions pinned to commit SHAs.
 
 ### Fixed
 
