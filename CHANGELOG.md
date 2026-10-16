@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- `make spellcheck` runs all spell checkers (`make aspell` is now `make spellcheck-aspell`).
+
+### Fixed
+
+- Makefile: `.PHONY` lists all targets; `make spellcheck-aspell` and `make showundef` work.
+
 ## [2026-10-15]
 
 ### Added
