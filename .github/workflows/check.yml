@@ -41,8 +41,9 @@ jobs:
           sudo apt-get install -y aspell-en aspell-de
       - name: aspell
         run: |
-          for tex in $(ls *.tex content/*.tex 2>/dev/null); do
-            if [[ "en" == "de" && "$tex" == thesis-example* ]]; then
+          for tex in *.tex chapters/*.tex; do
+            [ -e "$tex" ] || continue
+            if [[ "en" == "de" && ( "$tex" == thesis-example* || "$tex" == chapters/*.de.tex ) ]]; then
               continue
             fi
 
@@ -52,7 +53,7 @@ jobs:
               --encoding=utf-8\
               --conf=./.aspell.conf\
               -p ./.aspell.en.pws list\
-              < $tex | sort | uniq >> main.spell.bad
+              < "$tex" | sort | uniq >> main.spell.bad
           done
       - run: latexmk main
 
