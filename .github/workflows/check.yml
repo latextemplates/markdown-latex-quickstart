@@ -41,19 +41,29 @@ jobs:
           sudo apt-get install -y aspell-en aspell-de
       - name: aspell
         run: |
-          for tex in *.tex chapters/*.tex; do
+          for tex in *.tex chapters/*.tex content-markdown*.md chapters/*.md; do
             [ -e "$tex" ] || continue
-            if [[ "en" == "de" && ( "$tex" == thesis-example* || "$tex" == chapters/*.de.tex ) ]]; then
+            if [[ "en" == "de" && ( "$tex" == thesis-example* || "$tex" == chapters/*.de.tex || "$tex" == chapters/*.de.md ) ]]; then
               continue
             fi
 
             # The lualatex package "spelling" requires the content to be in a file ending with ".spell.bad"
-            aspell --mode=tex\
-              -l en_US\
-              --encoding=utf-8\
-              --conf=./.aspell.conf\
-              -p ./.aspell.en.pws list\
-              < "$tex" | sort | uniq >> main.spell.bad
+            # Markdown files may contain LaTeX commands and references (<#id>, {#id}), which are no words.
+            if [[ "$tex" == *.md ]]; then
+              sed -E 's/\\[A-Za-z]+//g; s/<#[^>]*>//g; s/\{#[^}]*\}//g' "$tex" | aspell --mode=markdown\
+                -l en_US\
+                --encoding=utf-8\
+                --conf=./.aspell.conf\
+                -p ./.aspell.en.pws list\
+                | sort | uniq >> main.spell.bad
+            else
+              aspell --mode=tex\
+                -l en_US\
+                --encoding=utf-8\
+                --conf=./.aspell.conf\
+                -p ./.aspell.en.pws list\
+                < "$tex" | sort | uniq >> main.spell.bad
+            fi
           done
       - run: latexmk main
 

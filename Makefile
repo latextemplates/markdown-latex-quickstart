@@ -110,6 +110,10 @@ spellcheck-aspell:
 		[ -e "$$tex" ] || continue; \
 		aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$tex" || exit 1; \
 	done
+	for md in content-markdown.md; do \
+		[ -e "$$md" ] || continue; \
+		aspell --mode=markdown -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$md" || exit 1; \
+	done
 
 ## Show only the relevant messages of the last LaTeX run
 log:

@@ -57,6 +57,7 @@ To have `minted` running with a traditional installation, you have to do followi
 
 1. Install python: `choco install python` - that uses [chocolatey](https://chocolatey.org/) to install Python
 2. Install [latexminted]: `pip install latexminted` - that uses the Python package manager to install the minted library
+
 ### latexmk hints
 
 [latexmk] runs the LaTeX tools (e.g., lualatex and biber) as often as needed to get the final PDF ([why `latexmk` is great](https://tex.stackexchange.com/a/249243/9075)).
@@ -215,7 +216,6 @@ Any derived work can freely be relicensed and can omit original copyright and li
 [lualatex]: http://www.luatex.org/
 [microtype]: https://ctan.org/pkg/microtype
 [minted]: https://ctan.org/pkg/minted
-[natbib]: https://ctan.org/pkg/natbib
 [paralist]: https://www.ctan.org/pkg/paralist
 [pdfcomment]: https://www.ctan.org/pkg/pdfcomment
 [upquote]: https://www.ctan.org/pkg/upquote
