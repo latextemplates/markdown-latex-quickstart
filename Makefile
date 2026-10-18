@@ -21,6 +21,18 @@ RUN = docker run --rm -u $(shell id -u):$(shell id -g) -e HOME=/tmp -v "$(CURDIR
 endif
 endif
 
+## The spell checkers (aspell, TeXtidote) run in the Docker image by DANTE e.V., which contains them; "make LOCAL=1" uses local installations
+## LINT_IT is interactive (aspell -c)
+ifeq ($(LOCAL),)
+ifeq ($(OS),Windows_NT)
+LINT = docker run --rm -v "$(CURDIR):/workdir" -w /workdir danteev/texlive:edge
+LINT_IT = docker run --rm -it -v "$(CURDIR):/workdir" -w /workdir danteev/texlive:edge
+else
+LINT = docker run --rm -u $(shell id -u):$(shell id -g) -e HOME=/tmp -v "$(CURDIR):/workdir" -w /workdir danteev/texlive:edge
+LINT_IT = docker run --rm -it -u $(shell id -u):$(shell id -g) -e HOME=/tmp -v "$(CURDIR):/workdir" -w /workdir danteev/texlive:edge
+endif
+endif
+
 ## Editor
 editor = gedit
 
@@ -98,7 +110,7 @@ edit:
 ## Spell checking: "make spellcheck" runs all spell checkers, "make spellcheck-<tool>" one of them
 spellcheck: spellcheck-aspell
 
-## Interactive spell checking with aspell (needs a local aspell installation)
+## Interactive spell checking with aspell
 ##
 ## .aspell.conf - zu ignorierende LaTeX-Befehle
 ##   Schreiben der LaTeX-Befehle in eine config Dateiname. Sieht so aus:
@@ -108,11 +120,11 @@ spellcheck: spellcheck-aspell
 spellcheck-aspell:
 	for tex in *.tex chapters-en/*.tex; do \
 		[ -e "$$tex" ] || continue; \
-		aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$tex" || exit 1; \
+		$(LINT_IT) aspell --mode=tex -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$tex" || exit 1; \
 	done
 	for md in content-markdown.md; do \
 		[ -e "$$md" ] || continue; \
-		aspell --mode=markdown -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$md" || exit 1; \
+		$(LINT_IT) aspell --mode=markdown -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$md" || exit 1; \
 	done
 
 ## Show only the relevant messages of the last LaTeX run
