@@ -41,9 +41,9 @@ jobs:
           sudo apt-get install -y aspell-en aspell-de
       - name: aspell
         run: |
-          for tex in *.tex chapters/*.tex content-markdown*.md chapters/*.md; do
+          for tex in *.tex chapters-*/*.tex content-markdown*.md chapters-*/*.md; do
             [ -e "$tex" ] || continue
-            if [[ "en" == "de" && ( "$tex" == thesis-example* || "$tex" == chapters/*.de.tex || "$tex" == chapters/*.de.md ) ]]; then
+            if [[ "en" == "de" && ( "$tex" == thesis-example* || "$tex" == chapters-de/* ) ]]; then
               continue
             fi
 
