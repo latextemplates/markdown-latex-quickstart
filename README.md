@@ -57,6 +57,7 @@ To have `minted` running with a traditional installation, you have to do followi
 
 1. Install python: `choco install python` - that uses [chocolatey](https://chocolatey.org/) to install Python
 2. Install [latexminted]: `pip install latexminted` - that uses the Python package manager to install the minted library
+
 ### latexmk hints
 
 [latexmk] runs the LaTeX tools (e.g., lualatex and biber) as often as needed to get the final PDF ([why `latexmk` is great](https://tex.stackexchange.com/a/249243/9075)).
@@ -101,11 +102,22 @@ On the command line, there are additional features:
 - `latexmk -C` or `make clean` for cleaning up
 - `make log` shows only the relevant messages of the last LaTeX run (using [texlogsieve](https://ctan.org/pkg/texlogsieve))
 - `make format` to reformat the `.tex` files (one sentence per line and indent)
-- `make spellcheck` runs all spell checkers:
+- `make spellcheck` runs all spell checkers (in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive), which contains them; `make LOCAL=1 spellcheck` uses local installations):
   - `make spellcheck-aspell` for interactive spell checking with aspell
+- `make dictionaries` merges the word lists of the spell checkers (see the FAQ on adding words)
 - `make stand`: Creates a new PDF with the current status of the document.
 - `make view`: Opens the configured viewer
 - `make mrproper`: Cleans up and removes also editor backup files.
+
+Without `make` (e.g., on Windows), run a target with `make` in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive), which contains `make` and all tools, e.g., `dictionaries`:
+
+```powershell
+docker run --rm -it -v "${PWD}:/workdir" -w /workdir danteev/texlive:2026-C make LOCAL=1 dictionaries
+```
+
+```bash
+docker run --rm -it -u "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/workdir" -w /workdir danteev/texlive:2026-C make LOCAL=1 dictionaries
+```
 
 ### Linting your Markdown
 
@@ -186,13 +198,28 @@ For example:
 \foreignlanguage{english}{Therefore, our proposed approach will change the world.}
 ```
 
+### Q: How do I add a word (e.g., the name of a tool) to the spell checkers?
+
+Each spell checker reads its own word list; add the word as a new line:
+
+| Spell checker | Word list |
+| --- | --- |
+| aspell (CI job `spell-check`, `make spellcheck-aspell`) | `.aspell.en.pws` (English), `.aspell.de.pws` (German); below the first line, no hyphenated words |
+| [LTeX+] (VS Code) | `.vscode/ltex.dictionary.en-US.txt`, `.vscode/ltex.dictionary.de-DE.txt`; "Add to dictionary" in VS Code writes there |
+| [typos](https://github.com/crate-ci/typos) (CI job `typos`) | `.typos.toml`, section `[default.extend-words]`, e.g., `Heros = "Heros"`; only needed if typos reports the word |
+
+The word lists of aspell and LTeX+ contain the same words.
+Instead of editing each of them, add the word to the aspell or the LTeX+ word list and run `make dictionaries`: it merges both and writes the word into all of them (hyphenated words not into aspell's).
+On GitHub, the workflow `Dictionaries` does this after each push that changes one of these word lists and commits the result.
+To remove a word, delete it from the aspell and the LTeX+ word list.
+
 ## Further information
 
 - Why the templates use which packages: [decision records of the template generator](https://github.com/latextemplates/generator-latex-template/tree/main/docs/decisions)
 - Other templates: <https://latextemplates.github.io/>
 - For German users, go to <https://texfragen.de/>.
 - Frank Mittelbach with Ulrike Fischer: [The LaTeX Companion](https://www.latex-project.org/news/2023/03/17/TLC3/) is the ultimate guide for LaTeX: The authors went through all packages offered by [CTAN](https://ctan.org/), selected the most promising ones, described them, and provide minimal working example for each of it.
-- Lutz Hering, Heike Hering: [How to Write Technial Reports](https://doi.org/10.1007/978-3-540-69929-3), Springer, 2010; also available in German [Technische Berichte - verständlich gliedern, gut gestalten, überzeugend vortragen](https://doi.org/10.1007/978-3-8348-8317-9). - Highly recommended, because it guides through all aspects of a report (such as a Master Thesis).
+- Lutz Hering, Heike Hering: [How to Write Technical Reports](https://doi.org/10.1007/978-3-540-69929-3), Springer, 2010; also available in German [Technische Berichte - verständlich gliedern, gut gestalten, überzeugend vortragen](https://doi.org/10.1007/978-3-8348-8317-9). - Highly recommended, because it guides through all aspects of a report (such as a Master Thesis).
 - Marcus Deininger et al.: [Studienarbeiten - Ein Leitfaden zur Erstellung, Durchführung und Präsentation wissenschaftlicher Abschlussarbeiten am Beispiel Informatik](https://vdf.ch/studienarbeiten.html?author_id=2877), vdf. - Recommended as guideline for planning and working on the whole thesis.
 - Charles Lipson, [Cite Right, Second Edition: A Quick Guide to Citation Styles--MLA, APA, Chicago, the Sciences, Professions, and More](http://www.press.uchicago.edu/ucp/books/book/chicago/C/bo10702043.html), Chicago Guides to Writing, Editing, and Publishing, 2011. - Recommended in case you are unsure about how to correctly cite something.
 
@@ -215,7 +242,6 @@ Any derived work can freely be relicensed and can omit original copyright and li
 [lualatex]: http://www.luatex.org/
 [microtype]: https://ctan.org/pkg/microtype
 [minted]: https://ctan.org/pkg/minted
-[natbib]: https://ctan.org/pkg/natbib
 [paralist]: https://www.ctan.org/pkg/paralist
 [pdfcomment]: https://www.ctan.org/pkg/pdfcomment
 [upquote]: https://www.ctan.org/pkg/upquote
