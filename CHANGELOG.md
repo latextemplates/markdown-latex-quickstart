@@ -19,6 +19,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 - `manuscript.md` and README.md: markdownlint findings fixed.
 - `make spellcheck-aspell`: aspell runs in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive).
 - README.md: FAQ on adding words (e.g., names of tools) to the spell checkers.
+- README.md: how to run the `make` targets in Docker without a local `make`.
 
 ### Fixed
 
