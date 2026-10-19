@@ -187,6 +187,16 @@ For example:
 \foreignlanguage{english}{Therefore, our proposed approach will change the world.}
 ```
 
+### Q: How do I add a word (e.g., the name of a tool) to the spell checkers?
+
+Each spell checker has its own list of accepted words, one word per line:
+
+| Spell checker | Word list |
+| --- | --- |
+| aspell (CI job `spell-check`, `make spellcheck-aspell`) | `.aspell.en.pws` (English), `.aspell.de.pws` (German); below the first line, without hyphenated words |
+| [LTeX+] (VS Code) | `.vscode/ltex.dictionary.en-US.txt`, `.vscode/ltex.dictionary.de-DE.txt`; "Add to dictionary" in VS Code writes there |
+| [typos](https://github.com/crate-ci/typos) (CI job `typos`) | `.typos.toml`, section `[default.extend-words]`, e.g., `Heros = "Heros"`; only needed if typos reports the word |
+
 ## Further information
 
 - Why the templates use which packages: [decision records of the template generator](https://github.com/latextemplates/generator-latex-template/tree/main/docs/decisions)
