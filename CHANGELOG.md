@@ -10,11 +10,16 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Added
 
 - VS Code: [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) recommended, configured by `.markdownlint.yml`.
+- CI: [typos](https://github.com/crate-ci/typos) checks the spelling, also in comments (configured in `_typos.toml`).
 
 ### Changed
 
 - `manuscript.md` and README.md: markdownlint findings fixed.
 - `make spellcheck-aspell`: aspell runs in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive).
+
+### Fixed
+
+- README.md: typo in a book title fixed.
 
 ## [2026-10-16]
 
