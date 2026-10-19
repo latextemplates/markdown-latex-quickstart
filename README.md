@@ -109,6 +109,16 @@ On the command line, there are additional features:
 - `make view`: Opens the configured viewer
 - `make mrproper`: Cleans up and removes also editor backup files.
 
+Without `make` (e.g., on Windows), run a target with `make` in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive), which contains `make` and all tools, e.g., `dictionaries`:
+
+```powershell
+docker run --rm -it -v "${PWD}:/workdir" -w /workdir danteev/texlive:2026-C make LOCAL=1 dictionaries
+```
+
+```bash
+docker run --rm -it -u "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/workdir" -w /workdir danteev/texlive:2026-C make LOCAL=1 dictionaries
+```
+
 ### Linting your Markdown
 
 Because the prose is a plain Markdown file, the text linters run on it directly — no extraction, and the reported line numbers point straight at `manuscript.md`. Two workflows lint it and post inline annotations: `check-markdown` runs [Vale](https://vale.sh) (spelling, repetition), and `check-textlint` runs [textlint](https://github.com/textlint/textlint) (`write-good` + `terminology`).
