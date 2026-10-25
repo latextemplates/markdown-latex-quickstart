@@ -17,6 +17,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Changed
 
+- The README recommends the [JabRef beta version](https://github.com/JabRef/jabref/releases), because the stable version 5.15 is too old.
 - `manuscript.md` and README.md: markdownlint findings fixed.
 - `make spellcheck-aspell`: aspell runs in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive).
 - README.md: FAQ on adding words (e.g., names of tools) to the spell checkers.
