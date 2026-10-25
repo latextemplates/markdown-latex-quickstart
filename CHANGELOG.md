@@ -10,6 +10,15 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 ### Added
 
 - `.devcontainer/devcontainer.json`: open the repository in VS Code ("Reopen in Container") or in GitHub Codespaces to work inside the TeX Live image, without a local LaTeX installation.
+
+### Changed
+
+- The README recommends the [JabRef beta version](https://github.com/JabRef/jabref/releases), because the stable version 5.15 is too old.
+
+## [2026-10-19]
+
+### Added
+
 - VS Code: [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) recommended, configured by `.markdownlint.yml`.
 - VS Code: LTeX+ knows the words of the aspell word lists (`.vscode/ltex.dictionary.<language>.txt`).
 - `make dictionaries` merges the word lists of aspell and LTeX+.
@@ -18,7 +27,6 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Changed
 
-- The README recommends the [JabRef beta version](https://github.com/JabRef/jabref/releases), because the stable version 5.15 is too old.
 - `manuscript.md` and README.md: markdownlint findings fixed.
 - `make spellcheck-aspell`: aspell runs in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive).
 - README.md: FAQ on adding words (e.g., names of tools) to the spell checkers.
@@ -102,7 +110,8 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 - Initial Markdown quick-start template, generated from [generator-latex-template](https://github.com/latextemplates/generator-latex-template) with `--documentclass=mwe`: write your content in Markdown inside a `\begin{markdown}` block and compile it to a PDF with LuaLaTeX + biber. Ships an English (`main.tex`) and a German (`main-de.tex`) example.
 - Acronyms via the `glossaries` package: define them once in the wrapper `.tex`, and they are recognized automatically in the running Markdown text and collected into an acronym list in the backmatter; `[X]{.acronym}` marks up an acronym explicitly. [#4](https://github.com/latextemplates/markdown-latex-quickstart/issues/4)
 
-[Unreleased]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-16...HEAD
+[Unreleased]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-19...HEAD
+[2026-10-19]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-16...2026-10-19
 [2026-10-16]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-15...2026-10-16
 [2026-10-15]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-14...2026-10-15
 [2026-10-14]: https://github.com/latextemplates/markdown-latex-quickstart/compare/2026-10-08...2026-10-14
