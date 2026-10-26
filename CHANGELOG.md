@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `.devcontainer/devcontainer.json`: open the repository in VS Code ("Reopen in Container") or in GitHub Codespaces to work inside the TeX Live image, without a local LaTeX installation.
+
+### Changed
+
+- The README recommends the [JabRef beta version](https://github.com/JabRef/jabref/releases), because the stable version 5.15 is too old.
+
 ## [2026-10-19]
 
 ### Added
