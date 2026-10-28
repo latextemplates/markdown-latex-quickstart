@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Table captions: the space is now between caption and table, not above the caption (KOMA-Script option `captions=tableheading`).
+
 ## [2026-10-26]
 
 ### Added
