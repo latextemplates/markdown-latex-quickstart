@@ -9,6 +9,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Added
 
+- Smaller PDFs: when compiling with `--shell-escape`, [graphicscache](https://ctan.org/pkg/graphicscache) re-encodes every included image once (lossless, at most 300 dpi) and caches it in `graphicscache/`; without shell escape nothing changes.
 - README: an "Advanced quick start" sets up the document as a git repository with the template as remote, so template updates can be merged later; the FAQ on synchronizing updates points to it.
 
 ### Changed
