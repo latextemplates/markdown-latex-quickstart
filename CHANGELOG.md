@@ -13,7 +13,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Changed
 
-- The acronym list is sorted by TeX itself (`\makenoidxglossaries`); no `makeglossaries` run is needed, so the list also appears when compiling without latexmk.
+- The acronym list is sorted by TeX itself (`\makenoidxglossaries`); no `makeglossaries` run is needed, so the list also appears when compiling without latexmk; `.latexmkrc` no longer calls `makeglossaries-lite`.
 
 ### Fixed
 
