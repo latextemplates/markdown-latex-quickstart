@@ -9,6 +9,20 @@ The LaTeX snippets this template is assembled from can be inspected at <https://
 - Write your text in [`manuscript.md`](manuscript.md).
 - Compile with "lualatex + biber" in your TeX editor or with `latexmk main` / `make` on the command line.
 
+### Advanced quick start
+
+Instead of downloading the ZIP, let git fetch the template; later template updates then merge into your text (see the [FAQ](#q-how-can-i-synchronize-updates-from-the-template-to-my-repository)).
+In an empty folder:
+
+```shell
+git init -b main
+git remote add template https://github.com/latextemplates/markdown-latex-quickstart.git
+git fetch template
+git merge template/main
+```
+
+Then edit and compile as above.
+
 ## LaTeX compilation
 
 Compile either in a Docker container (recommended) or with a LaTeX distribution installed on your machine.
