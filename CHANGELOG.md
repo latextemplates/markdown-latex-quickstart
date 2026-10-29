@@ -7,6 +7,10 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- The acronym list is sorted by TeX itself (`\makenoidxglossaries`); no `makeglossaries` run is needed, so the list also appears when compiling without latexmk.
+
 ### Fixed
 
 - Table captions: the space is now between caption and table, not above the caption (KOMA-Script option `captions=tableheading`).
