@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Smaller PDFs: when compiling with `--shell-escape`, [graphicscache](https://ctan.org/pkg/graphicscache) re-encodes every included image once (lossless, at most 300 dpi) and caches it in `graphicscache/`; without shell escape nothing changes.
+- README: an "Advanced quick start" sets up the document as a git repository with the template as remote, so template updates can be merged later; the FAQ on synchronizing updates points to it.
+
+### Changed
+
+- The acronym list is sorted by TeX itself (`\makenoidxglossaries`); no `makeglossaries` run is needed, so the list also appears when compiling without latexmk; `.latexmkrc` no longer calls `makeglossaries-lite`.
+
+### Fixed
+
+- Table captions: the space is now between caption and table, not above the caption (KOMA-Script option `captions=tableheading`).
+
 ## [2026-10-26]
 
 ### Added

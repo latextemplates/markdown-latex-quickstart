@@ -16,6 +16,7 @@
   % Für beidseitigen Druck die beiden Zeilen darüber durch "twoside, open=right," ersetzen
   parskip=half,
   numbers=noenddot,
+  captions=tableheading,  % table captions are set above the table: put the space between caption and table, not above the caption
 ]{scrbook}
 
 % --- LuaLaTeX-Schrift-/Typografie-Setup ---
@@ -57,6 +58,23 @@
 
 % --- Abbildungen + intelligente Querverweise ---
 \usepackage{graphicx}
+% Smaller PDF: graphicscache re-encodes every included image once with Ghostscript (lossless, at most 300 dpi) and
+% caches the result in graphicscache/. It needs shell escape and an external pdflatex, so it is loaded only when the
+% document is compiled with --shell-escape; without, images are embedded as they are.
+% Doc: https://ctan.org/pkg/graphicscache
+\ExplSyntaxOn
+\sys_if_shell_unrestricted:T { \RequirePackage [ compress = flat ] { graphicscache } }
+\ExplSyntaxOff
+\makeatletter
+% graphicscache spells the Ghostscript filter "FlatEncode"; Ghostscript knows it as FlateEncode and rejects the typo.
+% Remove when https://github.com/xqms/graphicscache/issues/30 is fixed.
+\@ifpackageloaded{graphicscache}{%
+  \def\graphicscache@compress@mode{FlateEncode}%
+  % graphicscache parses the \includegraphics options itself and does not know graphicx's alt text (the markdown package sets it).
+  % Remove when https://github.com/xqms/graphicscache/issues/29 is fixed.
+  \pgfkeys{/graphicscache/alt/.code={\graphicscache@addarg{alt={\unexpanded{#1}}}}}%
+}{}
+\makeatother
 \usepackage{zref-clever}
 \zcsetup{cap = true}    % Typnamen groß schreiben: "Kapitel", "Abbildung", "Tabelle"
 
@@ -77,7 +95,7 @@
 % glossaries ist die klassische Ausnahme von "hyperref zuletzt": NACH hyperref
 % laden, damit Akronym-Verwendungen und das Abkürzungsverzeichnis verlinkt sind.
 \usepackage[acronym, nopostdot]{glossaries}
-\makeglossaries
+\makenoidxglossaries   % the list is sorted by TeX itself: no makeglossaries run needed
 \setacronymstyle{long-short}    % wie \gls Einträge setzt; das markdown-Theme selbst druckt immer die Kurzform
 \newacronym{html}{HTML}{HyperText Markup Language}
 \newacronym{yaml}{YAML}{YAML Ain't Markup Language}
@@ -129,7 +147,7 @@
 
 \backmatter
 
-\printacronyms
+\printnoidxglossary[type=\acronymtype,sort=word]
 
 \printbibliography
 
