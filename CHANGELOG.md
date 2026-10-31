@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Document version in the footer: `main.tex` offers [gitver](https://ctan.org/pkg/gitver) and a `\cfoot*{\versionBox}` line commented out; uncomment them and compile with `--shell-escape` to print commit and build time on every page.
+
 ## [2026-10-30]
 
 ### Added
