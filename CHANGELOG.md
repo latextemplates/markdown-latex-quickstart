@@ -11,6 +11,11 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 - The main file header and the PDF properties (custom entry `Template`) name the template and the generator version the document is based on. [scientific-thesis-template#93](https://github.com/latextemplates/scientific-thesis-template/issues/93)
 
+### Fixed
+
+- `rotating` is loaded before `tablefootnote`, so packages added later that need it (`ctable`, `sidewaystable`) no longer fail with "Package rotating loaded after tablefootnote". [scientific-thesis-template#101](https://github.com/latextemplates/scientific-thesis-template/issues/101)
+
+
 ## [2026-11-01]
 
 ### Added
