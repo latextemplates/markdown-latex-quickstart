@@ -9,7 +9,7 @@ Versioning is done using [Calendar Versioning](https://calver.org/).
 
 ### Added
 
-- README: FAQ on a precompiled preamble with pdfLaTeX (`mylatexformat`) and its caveats, with a link to the decision record on compilation speed; `*.fmt` is ignored by git.
+- README: FAQ on a precompiled preamble with pdfLaTeX (`mylatex`) and its caveats, with a link to the decision record on compilation speed; `*.fmt` is ignored by git.
 - The main file header and the PDF properties (custom entry `Template`) name the template and the generator version the document is based on. [scientific-thesis-template#93](https://github.com/latextemplates/scientific-thesis-template/issues/93)
 
 ### Fixed
