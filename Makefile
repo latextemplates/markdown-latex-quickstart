@@ -127,6 +127,10 @@ spellcheck-aspell:
 		$(LINT_IT) aspell --mode=markdown -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$md" || exit 1; \
 	done
 
+## Check the LaTeX sources for typographic and syntax issues with ChkTeX (configuration: .chktexrc)
+chktex:
+	$(RUN) find . -maxdepth 2 \( -name 'main*.tex' -o -path './chapters-*/*.tex' \) -exec chktex -q {} +
+
 ## Merge the word lists of the spell checkers: a word added to .aspell.<language>.pws or (e.g., by
 ## "Add to dictionary" in VS Code) to .vscode/ltex.dictionary.<language>.txt ends up in both.
 ## aspell word lists cannot contain hyphenated words; these words are added to the other lists.
