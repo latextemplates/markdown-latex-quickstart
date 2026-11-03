@@ -3,6 +3,7 @@
 % !TeX spellcheck = en-US
 % LTeX: language=en-US
 % -*- coding:utf-8 mod:LaTeX -*-
+% Generated with generator-latex-template 2026.11.3 for latextemplates/markdown-latex-quickstart
 %
 % Minimal quick-start template: write your content in Markdown and get a LaTeX
 % PDF. No thesis scaffolding, just the essentials. Compile with LuaLaTeX + biber
@@ -90,6 +91,10 @@
 % need no extra setup. `hidelinks` keeps links clickable without coloured boxes
 % (swap for `colorlinks=true` if you prefer visible coloured links on screen).
 \usepackage[hidelinks, unicode, pdfusetitle]{hyperref}
+% Which template this document is based on, in the PDF properties (custom entry "Template"; shown by
+% "pdfinfo -custom" and in the document properties of most viewers). Keep it: it tells which version
+% of the template a document was built on, which helps when comparing or updating adapted files.
+\hypersetup{pdfinfo={Template={latextemplates/markdown-latex-quickstart, generated with generator-latex-template 2026.11.3}}}
 
 % --- Acronyms: define once, use anywhere in the Markdown text -------------
 % glossaries is the classic exception to "hyperref last": load it AFTER
@@ -136,7 +141,7 @@
 % Without a git repository (e.g. a downloaded zip), gitver reports an error and the version reads "unknown".
 % Doc: https://ctan.org/pkg/gitver
 %\ExplSyntaxOn
-%\sys_if_shell_unrestricted:T { \RequirePackage [ noheader , nopdfinfo ] { gitver } }
+%\sys_if_shell_unrestricted:T { \RequirePackage [ noheader , nopdfinfo ] { gitver } } % chktex 26
 %\ExplSyntaxOff
 %\providecommand{\gitVer}{}
 %\providecommand{\versionBox}{}

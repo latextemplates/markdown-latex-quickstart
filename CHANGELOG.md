@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 Versioning is done using [Calendar Versioning](https://calver.org/).
 
+## [Unreleased]
+
+### Added
+
+- [ChkTeX](https://ctan.org/pkg/chktex) lint: `make chktex` and the job `chktex` of the `Check` workflow check the main file for typographic and syntax issues. `.chktexrc` turns off the four warnings that do not fit the template (listed there with the reason) and accepts a spaced en dash, so no `-n` options are needed; a single line is excluded with `% chktex <number>` at its end. [scientific-thesis-template#108](https://github.com/latextemplates/scientific-thesis-template/issues/108)
+- README: FAQ on a precompiled preamble with pdfLaTeX (`mylatex`) and its caveats, with a link to the decision record on compilation speed; `*.fmt` is ignored by git.
+- The main file header and the PDF properties (custom entry `Template`) name the template and the generator version the document is based on. [scientific-thesis-template#93](https://github.com/latextemplates/scientific-thesis-template/issues/93)
+
+### Fixed
+
+- `rotating` is loaded before `tablefootnote`, so packages added later that need it (`ctable`, `sidewaystable`) no longer fail with "Package rotating loaded after tablefootnote". [scientific-thesis-template#101](https://github.com/latextemplates/scientific-thesis-template/issues/101)
+
+
 ## [2026-11-01]
 
 ### Added

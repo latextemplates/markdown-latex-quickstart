@@ -118,6 +118,7 @@ On the command line, there are additional features:
 - `latexmk -C` or `make clean` for cleaning up
 - `make log` shows only the relevant messages of the last LaTeX run (using [texlogsieve](https://ctan.org/pkg/texlogsieve))
 - `make format` to reformat the `.tex` files (one sentence per line and indent)
+- `make chktex` checks the LaTeX sources for typographic and syntax issues with [ChkTeX](https://ctan.org/pkg/chktex); the `Check` workflow runs it as job `chktex`. Warnings to ignore are configured in `.chktexrc` (`chktex -l` lists all), a single line with `% chktex <number>` at its end.
 - `make spellcheck` runs all spell checkers (in the [Docker image by DANTE e.V.](https://hub.docker.com/r/danteev/texlive), which contains them; `make LOCAL=1 spellcheck` uses local installations):
   - `make spellcheck-aspell` for interactive spell checking with aspell
 - `make dictionaries` merges the word lists of the spell checkers (see the FAQ on adding words)
@@ -194,15 +195,48 @@ Add the same comment to further `.tex` files.
 
 ## FAQs
 
-### Q: How do I find the cause of a LaTeX error?
+### Q: pdfLaTeX stops with "Invalid UTF-8 byte sequence (\lst@EC)" in a listing, or an umlaut is missing in it.
 
-In case something goes wrong, you can instruct the LaTeX compiler to stop at the first error:
+Under pdfLaTeX, the `listings` package reads a listing byte by byte, so a character outside ASCII has to be mapped to its LaTeX command.
+The template does this for accented Latin letters and common punctuation with `literate=` in `\lstset` (search for `extendedchars` in `main.tex`).
+A character that is not in the table triggers the error and is dropped.
+Add it with the same pattern, e.g., `{ő}{{\H{o}}}1` (the `1` is its width in characters).
+LuaLaTeX reads UTF-8 directly and needs no table, which is why the table is inside `\ifpdftex`.
+[listingsutf8](https://ctan.org/pkg/listingsutf8) helps with `\lstinputlisting` only, not with the `lstlisting` environment.
+
+### Q: How do I include an SVG file?
+
+Convert it once to PDF with Inkscape (1.0 or later) and include the PDF with `\includegraphics`:
 
 ```bash
-lualatex --synctex=1 main
+inkscape figure.svg --export-type=pdf --export-filename=figure.pdf
 ```
 
+The [svg](https://ctan.org/pkg/svg) package automates this (`\includesvg{figure}` converts at every build), but it needs Inkscape on the machine that compiles and `--shell-escape`, so the conversion fails on Overleaf and in CI; the one-time conversion has neither constraint.
+Text in the SVG stays as it is; the `--export-latex` option of Inkscape writes the text to a `.pdf_tex` file set by LaTeX in the document font instead (see the svg package manual for the `\includeinkscape` workflow).
+
+### Q: How do I find the cause of a LaTeX error?
+
+Run the compiler so that it stops at the first error instead of continuing with a damaged document:
+
+```bash
+lualatex -halt-on-error --synctex=1 main
+```
+
+The line starting with `!` in the output (and in `main.log`) names the error, the following `l.<number>` line the line of the source.
+`make log` shows only the relevant messages of the last run (using [texlogsieve](https://ctan.org/pkg/texlogsieve)).
+For an interactive run, [texfot](https://ctan.org/pkg/texfot) wraps the compiler and prints only the lines that probably need a change in the source:
+
+```bash
+texfot lualatex main
+```
+
+Which tool fits which situation is compared in the [decision record on log filtering](https://github.com/latextemplates/gadr-latex-packages/blob/main/log-filtering.md).
 Run `biber main` to get the bibliography rendered (execute `lualatex` afterwards).
+
+If there is no PDF although the log shows only warnings, the compiler stopped on a missing file without an `!` line: search the end of the log for `not found`, `cannot find`, or `Fatal error`.
+A missing font or encoding file is the usual cause (see the questions on `.enc` files and `LatinModernMath` below); warnings such as "THIS IS AN ALPHA VERSION" of a package are harmless.
+The `Check` workflow builds this template on every change, so a build that fails locally comes from the local TeX installation; compare with the PDF at <https://latextemplates.github.io/markdown-latex-quickstart/> or build in the Docker image (see the Makefile).
 
 ### Q: How do I spell check a passage in another language?
 

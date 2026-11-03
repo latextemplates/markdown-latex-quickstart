@@ -127,6 +127,10 @@ spellcheck-aspell:
 		$(LINT_IT) aspell --mode=markdown -l en_US --encoding=utf-8 --conf=./.aspell.conf -p ./.aspell.en.pws -c "$$md" || exit 1; \
 	done
 
+## Check the LaTeX sources for typographic and syntax issues with ChkTeX (configuration: .chktexrc)
+chktex:
+	$(RUN) find . -maxdepth 2 \( -name 'main*.tex' -o -path './chapters-*/*.tex' \) -exec chktex -q {} +
+
 ## Merge the word lists of the spell checkers: a word added to .aspell.<language>.pws or (e.g., by
 ## "Add to dictionary" in VS Code) to .vscode/ltex.dictionary.<language>.txt ends up in both.
 ## aspell word lists cannot contain hyphenated words; these words are added to the other lists.
@@ -136,7 +140,7 @@ dictionaries:
 	for pair in en:en-US de:de-DE; do \
 		lang=$${pair%%:*}; pws=".aspell.$$lang.pws"; ltex=".vscode/ltex.dictionary.$${pair#*:}.txt"; \
 		[ -e "$$pws" ] || continue; \
-		{ tail -n +2 "$$pws"; if [ -e "$$ltex" ]; then cat "$$ltex"; fi; printf '%s\n' $(HYPHENATED_WORDS); } | grep -v '^$$' | LC_ALL=C sort -u > "$$ltex.tmp"; \
+		{ tail -n +2 "$$pws"; if [ -e "$$ltex" ]; then cat "$$ltex"; fi; printf '%s\n' $(HYPHENATED_WORDS); } | grep -v '^$$' | LC_ALL=C sort -u | LC_ALL=C sort -f > "$$ltex.tmp"; \
 		mv "$$ltex.tmp" "$$ltex"; \
 		grep -v -e - "$$ltex" > "$$pws.tmp"; \
 		{ echo "personal_ws-1.1 $$lang $$(wc -l < "$$pws.tmp" | tr -d ' ') utf-8"; cat "$$pws.tmp"; } > "$$pws"; \
