@@ -11,12 +11,6 @@ concurrency:
 jobs:
   generatetex:
     runs-on: ubuntu-latest
-    strategy:
-      # English provides the full set of shared files (README, check.yml, …);
-      # German contributes only its main-de.tex.
-      max-parallel: 1
-      matrix:
-        lang: [en, de]
     steps:
       - name: Set up Git repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -36,46 +30,46 @@ jobs:
           npm install
           npm link
           npm install -g yo
-      - run: mkdir /tmp/ltg
-      - name: Generate template
+      - name: Generate all variants
         shell: bash
-        working-directory: /tmp/ltg
         run: |
-          yo $GITHUB_WORKSPACE/generator-latex-template/generators/app/index.js \
-           --githubpublish\
-           --docker=iot\
-           --documentclass=mwe\
-           --papersize=a4\
-           --latexcompiler=lualatex\
-           --bibtextool=biblatex\
-           --overleaf=true\
-           --texlive=2026\
-           --lang=${{ matrix.lang }}\
-           --listings=listings\
-           --enquotes=csquotes\
-           --tweakouterquote=babel\
-           --todo=none\
-           --examples=false\
-           --howtotext=false
-        env:
-          yeoman_test: false
-      - name: Prepare files
-        working-directory: /tmp/ltg
-        run: |
-          if [ "${{ matrix.lang }}" == "de" ]; then
-            # The generator emits the German wrapper and its Markdown manuscript
-            # with -de suffixes (main-de.tex / manuscript-de.md); the English job
-            # owns every shared file.
-            cp main-de.tex manuscript-de.md "$GITHUB_WORKSPACE"
-          else
-            # the LICENSE of the repository should be kept
-            rm LICENSE
-            cp -r * "$GITHUB_WORKSPACE"
-            cp -r .* "$GITHUB_WORKSPACE"
-          fi
-          cd "$GITHUB_WORKSPACE"
+          # All variants in one job and one commit; the variant that owns the shared files (README, Makefile, ...) comes last.
+          for lang in de en; do
+            rm -rf /tmp/ltg && mkdir /tmp/ltg && cd /tmp/ltg
+            yo $GITHUB_WORKSPACE/generator-latex-template/generators/app/index.js \
+             --githubpublish\
+             --docker=iot\
+             --documentclass=mwe\
+             --papersize=a4\
+             --latexcompiler=lualatex\
+             --bibtextool=biblatex\
+             --overleaf=true\
+             --texlive=2026\
+             --lang=${lang}\
+             --listings=listings\
+             --enquotes=csquotes\
+             --tweakouterquote=babel\
+             --todo=none\
+             --examples=false\
+             --howtotext=false
+
+            if [ "${lang}" == "de" ]; then
+              # The generator emits the German wrapper and its Markdown manuscript
+              # with -de suffixes (main-de.tex / manuscript-de.md); the English job
+              # owns every shared file.
+              cp main-de.tex manuscript-de.md "$GITHUB_WORKSPACE"
+            else
+              # the LICENSE of the repository should be kept
+              rm LICENSE
+              cp -r * "$GITHUB_WORKSPACE"
+              cp -r .* "$GITHUB_WORKSPACE"
+            fi
+          done
+          cd ${{ github.workspace }}
           git status
           git diff
+        env:
+          yeoman_test: false
       - name: Commit changes
         uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
         with:
