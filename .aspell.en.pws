@@ -1,4 +1,4 @@
-personal_ws-1.1 en 190 utf-8
+personal_ws-1.1 en 194 utf-8
 abbreviationdot
 aboveskip
 ACM
@@ -34,8 +34,10 @@ dante
 Das
 Database
 dazu
+dblp
 der
 Diag
+DOI
 dwarflike
 eclipseKeywords
 eclipseStrings
@@ -127,6 +129,7 @@ ORCID
 Organization
 paralist
 pdfcomment
+PDFs
 pgfplots
 phfcc
 PNG
@@ -183,6 +186,7 @@ Worten
 wurde
 xcolor
 xleftmargin
+Xplore
 Zcref
 zcref
 Zref

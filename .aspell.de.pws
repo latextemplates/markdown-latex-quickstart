@@ -1,4 +1,4 @@
-personal_ws-1.1 de 191 utf-8
+personal_ws-1.1 de 196 utf-8
 abbreviationdot
 aboveskip
 Access
@@ -33,9 +33,11 @@ dante
 Das
 Database
 dazu
+dblp
 der
 Diag
 dissertation
+DOI
 dwarflike
 eclipseKeywords
 eclipseStrings
@@ -130,6 +132,7 @@ ORCID
 Organization
 paralist
 pdfcomment
+PDFs
 phfcc
 powerset
 Practitioner
@@ -145,6 +148,7 @@ RGB
 rmstrikethrough
 Rückverweise
 Schrödinger
+ScienceOS
 seit
 shortplural
 showstringspaces
@@ -184,6 +188,7 @@ Worten
 wurde
 xcolor
 xleftmargin
+Xplore
 Zcref
 zcref
 Zref
